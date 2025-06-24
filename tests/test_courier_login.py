@@ -1,6 +1,8 @@
 import pytest
+import allure
 from helpers import login_courier
 
+@allure.feature('Логин курьера')
 class TestCourierLogin:
     def test_courier_login_success(self, setup_courier):
         login, password, _ = setup_courier
@@ -8,6 +10,7 @@ class TestCourierLogin:
         assert response.status_code == 200
         assert "id" in response.json()
 
+    @allure.title('Авторизация с отсутствующими учетными данными')
     @pytest.mark.parametrize("login,password", [
         ("", "valid_password"),
         ("valid_login", ""),
@@ -23,6 +26,7 @@ class TestCourierLogin:
         assert response.status_code == 400
         assert response.json()["message"] == "Недостаточно данных для входа"
 
+    @allure.title('Авторизация с неверными учетными данными')
     @pytest.mark.parametrize("login,password", [
         ("wrong_login", "valid_password"),
         ("valid_login", "wrong_password"),
@@ -38,6 +42,7 @@ class TestCourierLogin:
         assert response.status_code == 404
         assert response.json()["message"] == "Учетная запись не найдена"
 
+    @allure.title('Авторизация несуществующего пользователя')
     def test_courier_login_nonexistent_user(self):
         response = login_courier("nonexistent_user", "password123")
         assert response.status_code == 404

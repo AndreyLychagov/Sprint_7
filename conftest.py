@@ -1,8 +1,6 @@
 import pytest
 import requests
-import random
-import string
-from helpers import BASE_URL, login_courier
+from helpers import BASE_URL, login_courier, generate_random_string
 
 
 @pytest.fixture
@@ -18,11 +16,7 @@ def setup_courier():
 
 
 def register_new_courier_and_return_login_password():
-    def generate_random_string(length):
-        letters = string.ascii_lowercase
-        return ''.join(random.choice(letters) for i in range(length))
 
-    login_pass = []
     login = generate_random_string(10)
     password = generate_random_string(10)
     first_name = generate_random_string(10)
@@ -36,12 +30,8 @@ def register_new_courier_and_return_login_password():
     response = requests.post(f'{BASE_URL}/courier', data=payload)
 
     if response.status_code == 201:
-        login_pass.append(login)
-        login_pass.append(password)
-        login_pass.append(first_name)
-
-    return login_pass
-
+        return [login, password, first_name]
+    return None
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):

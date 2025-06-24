@@ -1,7 +1,10 @@
+import allure
 import pytest
 from helpers import create_order
 
+@allure.feature('Создание заказа')
 class TestCreateOrder:
+    @allure.title('Создание заказа с разными цветами и проверка респонса')
     @pytest.mark.parametrize("color", [
         "BLACK",
         "GREY",
